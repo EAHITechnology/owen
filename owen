@@ -1,0 +1,76 @@
+#!/bin/bash
+
+if [ -z $1 ];then
+    echo "./owen --help"
+    exit
+fi
+
+if [ $1 = "--help" ];then
+    echo -e "
+    \033[31m owen started hunting!!!
+                                                __----~~~~~~~~~~~----
+                                     .  .   ~~//====......          _
+                     -.            \_|//     |||\  ~~~~~~::::... /~
+                  ___-==_       _-~o~  \/    |||  \          _/~~-
+          __---~~~.==~||\=_    -_--~/_-~|-   |\   \        _/~
+      _-~~     .=~    |  \\-_    '-~7  /-   /  ||    \      /
+    .~       .~       |   \\ -_    /  /-   /   ||      \   /
+   /  ____  /         |     \\ ~-_/  /|- _/   .||       \ /
+   |~~    ~~|--~~~~--_ \     ~==-/   | \~--===~~        .
+            '         ~-|      /|    |-~\~~       __--~~
+                        |-~~-_/ |    |   ~\_   _-~            /
+                             /  \     \__   \/~                \__
+                         _--~ _/ | .-~~____--~-/                  ~~=
+                        ((->/~   '.|||' -_|    ~~-/ ,              . 
+                                   -_     ~\      ~~---l__i__i__i--~~
+                                   _-~-__   ~)  \--______________--~~
+                                 //.-~~~-~_--~- |-------~~~~~~~~
+                                        //.-~~~--\
+    
+    \033[0m
+    
+    \033[33m --path 'github.com/newproject' \033[0m #Enter a directory
+
+            \033[33m --mod \033[0m #Add mod
+    "
+    exit
+fi
+
+if [ -z $GOPATH ];then
+    echo "\033[31m GOPATH NOT INIT  \033[0m"
+    exit
+fi
+
+cd $GOPATH/src
+
+function back_to_work_dir(){
+cd cage;cp -rf * ../
+cd .. 
+rm -rf ./cage;rm -rf .git
+}
+
+function initCage(){
+    git clone https://github.com/EAHITechnology/cage.git && back_to_work_dir
+}
+
+function initCageFail(){
+    echo "\033[31m hunte cage fail  \033[0m"
+    exit
+}
+
+if [ $1 = "--path" ];then
+    if [ -z $2 ];then
+        echo -e "
+        \033[31m path nil. Please input path \033[0m
+        "
+        exit
+    fi
+
+    mkdir -p $2;cd $2
+    initCage || initCageFail
+fi
+
+if [ $3 = "--mod" ];then
+    go mod init
+    go mod tidy
+fi
