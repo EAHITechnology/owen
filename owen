@@ -44,9 +44,9 @@ fi
 cd $GOPATH/src
 
 function back_to_work_dir(){
-cd cage;cp -rf * ../
-cd .. 
-rm -rf ./cage;rm -rf .git
+    cd cage;cp -rf * ../
+    cd .. 
+    rm -rf ./cage;rm -rf .git
 }
 
 function initCage(){
@@ -66,6 +66,13 @@ if [ $1 = "--path" ];then
         exit
     fi
 
+    if [ -e $2 ];then
+        echo -e "
+        \033[31m $2 already exists \033[0m
+        "
+        exit
+    fi
+
     mkdir -p $2;cd $2
     initCage || initCageFail
 fi
@@ -73,4 +80,16 @@ fi
 if [ $3 = "--mod" ];then
     go mod init
     go mod tidy
+
+
+    GOVERSION=$(go env GOVERSION)
+    version=${GOVERSION#*go}
+    big_version=${version%%.*}
+    if [ big_version=1 ];then
+        mid_version=${version#*.}
+        mid_version=${mid_version%%.*}
+        if [ mid_version=17  ];then
+            go mod tidy -compat=1.17
+        fi
+    fi
 fi
