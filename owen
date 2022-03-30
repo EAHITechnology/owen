@@ -50,10 +50,51 @@ echo "Owen will generated cage in $GOPATH/src"
 
 cd $GOPATH/src
 
+path = ""
+
 function back_to_work_dir(){
     cd cage;cp -rf * ../
     cd .. 
     rm -rf ./cage;rm -rf .git
+}
+
+function replaceImports(){
+    
+    sed -i '' "6c\ 
+    \"$path/logic\"
+    " ./handler/demo_handler.go
+    
+    sed -i '' "7c\ 
+    \"$path/proto\"
+    " ./handler/demo_handler.go
+
+    sed -i '' "7c\ 
+    \"$path/dao\"
+    " ./logic/demo_logic.go
+   
+    sed -i '' "8c\ 
+    \"$path/logic/manage\"
+    " ./logic/demo_logic.go
+
+    sed -i '' "8c\ 
+    \"$path/utils\"
+    " ./logic/backend_logic.go
+
+    sed -i '' "6c\ 
+    \"$path/handler\"
+    " ./server/server.go
+    
+    sed -i '' "7c\ 
+    \"$path/logic\"
+    " ./server/server.go
+
+    sed -i '' "8c\ 
+    logicServer \"$path/server\"
+    " ./main.go
+    
+    sed -i '' "9c\ 
+    \"$path/utils\"
+    " ./main.go
 }
 
 function initCage(){
@@ -90,8 +131,12 @@ if [[ $1 = "--path" ]];then
         exit
     fi
 
-    mkdir -p $2;cd $2
+    path=$2
+
+    mkdir -p $path;cd $path
     initCage || initCageFail
+
+    replaceImports || echo "replace fail" 
 fi
 
 if [[ $3 = "--mod" ]];then
