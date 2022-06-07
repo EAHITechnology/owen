@@ -50,7 +50,7 @@ echo "Owen will generated cage in $GOPATH/src"
 
 cd $GOPATH/src
 
-path = ""
+path=""
 
 function back_to_work_dir(){
     cd cage;cp -rf * ../
@@ -73,7 +73,7 @@ function replaceImports(){
     " ./logic/demo_logic.go
    
     sed -i '' "8c\ 
-    \"$path/logic/manage\"
+    \"$path/logic/manager\"
     " ./logic/demo_logic.go
 
     sed -i '' "8c\ 
